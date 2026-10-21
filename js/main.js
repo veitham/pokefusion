@@ -14,6 +14,8 @@ const currentTab = () => (TABS.includes(location.hash.slice(1)) ? location.hash.
 function showTab() {
   const tab = currentTab();
   for (const t of TABS) $(`#tab-${t}`).hidden = t !== tab;
+  $$(".scene").forEach((s) => s.classList.toggle("on", s.dataset.scene === tab));
+  document.body.dataset.tab = tab;
   $$(".tabs a").forEach((a) => a.classList.toggle("on", a.dataset.tab === tab));
   RENDERERS[tab]?.();
 }

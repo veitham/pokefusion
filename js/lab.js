@@ -212,6 +212,10 @@ export function initLab() {
     const other = activeSlot === "head" ? "body" : "head";
     if (slots[other] === null) activeSlot = other;
     renderLab();
+    // On narrow screens the box is below the machine.
+    if (slots.head !== null && slots.body !== null && matchMedia("(max-width: 860px)").matches) {
+      $(".lab-machine").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 
   $$(".capsule").forEach((cap) => {
