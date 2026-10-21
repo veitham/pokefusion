@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PokéFusion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">
+      <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="" />
+      <span>Poké<b>Fusion</b></span>
+    </div>
+    <nav class="tabs">
+      <a href="#booster" data-tab="booster">Boosters <span class="pill" id="nav-packs">0</span></a>
+      <a href="#collection" data-tab="collection">Collection</a>
+      <a href="#lab" data-tab="lab">Labo</a>
+      <a href="#fusiodex" data-tab="fusiodex">Fusiodex</a>
+    </nav>
+    <div class="topbar-actions">
+      <button id="sound-toggle" class="icon-btn" title="Son (cris des Pokémon)">🔊</button>
+      <button id="reset-save" class="icon-btn" title="Réinitialiser la partie">⟲</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- BOOSTERS -->
+    <section id="tab-booster" class="tab">
+      <div class="booster-top window">
+        <div class="pack-counter">
+          <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/poke-ball.png" alt="" />
+          <div>
+            <div class="big" id="pack-count">0</div>
+            <div class="muted">boosters</div>
+          </div>
+        </div>
+        <div class="pack-timer">
+          <div class="muted" id="pack-timer-label">Prochain booster…</div>
+          <div class="bar"><span id="pack-timer-bar"></span></div>
+        </div>
+        <div class="booster-buttons">
+          <button id="open-pack" class="btn btn-red">Ouvrir un booster</button>
+          <button id="open-all" class="btn" hidden>Tout ouvrir</button>
+        </div>
+      </div>
+
+      <div id="shelf" class="shelf"></div>
+      <p class="hint">Astuce : <kbd>Espace</kbd> ouvre toutes les Balls d'un coup, puis le booster suivant.</p>
+
+      <details class="window odds">
+        <summary>Taux d'apparition</summary>
+        <div id="odds-table"></div>
+      </details>
+    </section>
+
+    <!-- COLLECTION -->
+    <section id="tab-collection" class="tab" hidden>
+      <div class="window collection-head">
+        <div class="stats-row" id="collection-stats"></div>
+        <div class="toolbar">
+          <input id="col-search" type="search" placeholder="Rechercher…" />
+          <div class="seg" id="col-kind">
+            <button data-v="all" class="on">Tout</button>
+            <button data-v="mon">Pokémon</button>
+            <button data-v="fusion">Fusions</button>
+            <button data-v="dex">Pokédex</button>
+          </div>
+          <div class="tier-filter" id="col-tiers"></div>
+          <select id="col-sort">
+            <option value="tier">Rareté</option>
+            <option value="recent">Récents</option>
+            <option value="dex">N° Pokédex</option>
+            <option value="name">Nom</option>
+            <option value="count">Quantité</option>
+          </select>
+          <button id="release-dupes" class="btn btn-small" title="Garde 1 exemplaire de chaque, les shiny sont conservés">Relâcher les doublons</button>
+        </div>
+      </div>
+      <div id="collection-grid" class="grid"></div>
+    </section>
+
+    <!-- LABO -->
+    <section id="tab-lab" class="tab" hidden>
+      <div class="lab">
+        <aside class="window lab-box">
+          <h2>Ta boîte</h2>
+          <input id="lab-search" type="search" placeholder="Rechercher…" />
+          <div class="tier-filter" id="lab-tiers"></div>
+          <label class="check"><input type="checkbox" id="lab-only-drawn" /> Seulement les fusions dessinées</label>
+          <div id="lab-list" class="lab-list"></div>
+        </aside>
+
+        <div class="window lab-machine">
+          <h2>Machine à fusion</h2>
+          <div class="capsules">
+            <div class="capsule" data-slot="head">
+              <div class="capsule-label">Tête</div>
+              <div class="capsule-glass"></div>
+              <button class="capsule-clear" title="Retirer">✕</button>
+            </div>
+            <button id="lab-swap" class="icon-btn" title="Inverser">⇄</button>
+            <div class="capsule" data-slot="body">
+              <div class="capsule-label">Corps</div>
+              <div class="capsule-glass"></div>
+              <button class="capsule-clear" title="Retirer">✕</button>
+            </div>
+          </div>
+          <div id="lab-preview" class="lab-preview"></div>
+          <button id="lab-fuse" class="btn btn-red btn-big" disabled>Fusionner !</button>
+          <p class="hint">Les deux Pokémon utilisés disparaissent de ta collection.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FUSIODEX (free simulator) -->
+    <section id="tab-fusiodex" class="tab" hidden>
+      <div class="window sim">
+        <h2>Fusiodex</h2>
+        <p class="muted">Simule n'importe quelle fusion, sans rien dépenser.</p>
+        <div class="sim-pickers">
+          <div class="sim-picker" data-role="head">
+            <div class="capsule-label">Tête</div>
+            <input type="search" placeholder="Rechercher…" autocomplete="off" />
+            <ul class="results"></ul>
+            <div class="sim-preview"></div>
+          </div>
+          <div class="sim-actions">
+            <button id="sim-swap" class="icon-btn" title="Inverser">⇄</button>
+            <button id="sim-random" class="icon-btn" title="Aléatoire">🎲</button>
+          </div>
+          <div class="sim-picker" data-role="body">
+            <div class="capsule-label">Corps</div>
+            <input type="search" placeholder="Rechercher…" autocomplete="off" />
+            <ul class="results"></ul>
+            <div class="sim-preview"></div>
+          </div>
+        </div>
+        <div id="sim-result"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-backdrop"></div>
+    <div class="modal-box window"></div>
+  </div>
+  <div id="toasts" class="toasts"></div>
+
+  <footer>
+    Sprites de fusion : communauté <a href="https://infinitefusion.fandom.com/" target="_blank" rel="noopener">Pokémon Infinite Fusion</a>
+    (sprite pack + <a href="https://infinitefusiondex.com/" target="_blank" rel="noopener">Infinite Fusion Dex</a>) ·
+    Données, sprites officiels et cris : <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a>
+  </footer>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
